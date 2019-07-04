@@ -1,5 +1,6 @@
-package com.example.androidlatihan15_firebasedb_farhan
+package com.example.androidlatihan15_firebasedb_farhan.Adapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -8,16 +9,21 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.example.androidlatihan15_firebasedb_farhan.Model.BukuModel
+import com.example.androidlatihan15_firebasedb_farhan.Controller.MainActivity
+import com.example.androidlatihan15_firebasedb_farhan.R
 
 class BukuAdapter : RecyclerView.Adapter<BukuAdapter.BukuViewHolder> {
 
     lateinit var mContext: Context
     lateinit var itemBuku: List<BukuModel>
+    lateinit var listener: FirebaseDataListener
 
     constructor()
     constructor(mContext: Context, list: List<BukuModel>) {
         this.mContext = mContext
         this.itemBuku = list
+        listener = mContext as MainActivity
     }
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): BukuViewHolder {
@@ -41,6 +47,24 @@ class BukuAdapter : RecyclerView.Adapter<BukuAdapter.BukuViewHolder> {
         p0.ll_content.setOnClickListener {
             Toast.makeText(mContext, "Contoh touch Listener", Toast.LENGTH_SHORT).show()
         }
+        p0.ll_content.setOnLongClickListener(object : View.OnLongClickListener{
+            override fun onLongClick(v: View?): Boolean {
+                val builder = AlertDialog.Builder(mContext)
+                builder.setMessage("Pilih Operasi Data !!")
+                builder.setPositiveButton("Update"){
+                    dialog, i ->
+                    listener.onUpdateData(bukuModel, p1)
+                }
+                builder.setNegativeButton("Delete"){
+                    dialog, i -> listener.onDeleteData(bukuModel, p1)
+                }
+
+                val dialog : AlertDialog = builder.create()
+                dialog.show()
+
+                return true
+            }
+        })
     }
 
     inner class BukuViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
@@ -55,5 +79,10 @@ class BukuAdapter : RecyclerView.Adapter<BukuAdapter.BukuViewHolder> {
             tv_judul = itemview.findViewById(R.id.tv_title)
             tv_tanggal = itemview.findViewById(R.id.tv_tanggal)
         }
+    }
+
+    interface FirebaseDataListener{
+        fun onDeleteData(buku: BukuModel, position: Int)
+        fun onUpdateData(buku: BukuModel, position: Int)
     }
 }

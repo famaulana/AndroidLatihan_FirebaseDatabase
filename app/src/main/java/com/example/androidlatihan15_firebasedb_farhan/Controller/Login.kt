@@ -1,4 +1,4 @@
-package com.example.androidlatihan15_firebasedb_farhan
+package com.example.androidlatihan15_firebasedb_farhan.Controller
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log.d
 import android.util.Log.e
 import android.widget.Toast
+import com.example.androidlatihan15_firebasedb_farhan.Adapter.PrefsHelper
+import com.example.androidlatihan15_firebasedb_farhan.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient

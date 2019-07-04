@@ -1,8 +1,10 @@
-package com.example.androidlatihan15_firebasedb_farhan
+package com.example.androidlatihan15_firebasedb_farhan.Controller
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.example.androidlatihan15_firebasedb_farhan.Adapter.PrefsHelper
+import com.example.androidlatihan15_firebasedb_farhan.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -43,6 +45,7 @@ class Register : AppCompatActivity() {
         val counterID = helperPref.getCounterId()
 
         dbRef = FirebaseDatabase.getInstance().getReference("Data User/${fAuth.currentUser?.uid}")
+        dbRef.child("userID").setValue(fAuth.currentUser?.uid)
         dbRef.child("namaUser").setValue(nama)
         dbRef.child("Email").setValue(email)
         dbRef.child("Password").setValue(password)

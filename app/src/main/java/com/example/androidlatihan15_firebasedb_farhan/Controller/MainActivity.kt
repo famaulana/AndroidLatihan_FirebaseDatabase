@@ -1,4 +1,4 @@
-package com.example.androidlatihan15_firebasedb_farhan
+package com.example.androidlatihan15_firebasedb_farhan.Controller
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,16 +8,21 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log.e
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import com.example.androidlatihan15_firebasedb_farhan.Adapter.BukuAdapter
+import com.example.androidlatihan15_firebasedb_farhan.Adapter.PrefsHelper
+import com.example.androidlatihan15_firebasedb_farhan.Model.BukuModel
+import com.example.androidlatihan15_firebasedb_farhan.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BukuAdapter.FirebaseDataListener {
 
     lateinit var fAuth: FirebaseAuth
     private var bukuAdapter: BukuAdapter? = null
     private var rcView: RecyclerView? = null
-    private var list: MutableList<BukuModel> = ArrayList<BukuModel>()
+    private var list: MutableList<BukuModel>? = null
     lateinit var dbref: DatabaseReference
     lateinit var helperPrefs: PrefsHelper
 
@@ -39,11 +44,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
+                list = ArrayList<BukuModel>()
                 for (dataSnapshot in p0.children) {
                     val addDataAll = dataSnapshot.getValue(BukuModel::class.java)
-                    list.add(addDataAll!!)
+                    addDataAll!!.setKey(dataSnapshot.key!!)
+                    list!!.add(addDataAll!!)
+                    bukuAdapter =
+                        BukuAdapter(this@MainActivity, list!!)
                 }
-                bukuAdapter = BukuAdapter(applicationContext, list)
                 rcView!!.adapter = bukuAdapter
             }
 
@@ -53,10 +61,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, AddData::class.java))
         }
 
-//        btn_logout.setOnClickListener {
-//            fAuth.signOut()
-//            onBackPressed()
-//        }
+        fab_upload.setOnClickListener {
+            startActivity(Intent(this, UploadFileStorage::class.java))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -73,5 +80,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onUpdateData(buku: BukuModel, position: Int) {
+        val datax = buku.getKey()
+        val intent = Intent(this, AddData::class.java)
+        intent.putExtra("kode", datax)
+        startActivity(intent)
+    }
+
+    override fun onDeleteData(buku: BukuModel, position: Int) {
+        dbref = FirebaseDatabase.getInstance().getReference("Data Buku/${helperPrefs.getUID()}")
+        if (dbref != null) {
+            dbref.child(buku.getKey()).removeValue().addOnSuccessListener {
+                Toast.makeText(this, "Data Removed", Toast.LENGTH_SHORT).show()
+                bukuAdapter!!.notifyDataSetChanged()
+            }
+        }
     }
 }

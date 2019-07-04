@@ -1,4 +1,4 @@
-package com.example.androidlatihan15_firebasedb_farhan
+package com.example.androidlatihan15_firebasedb_farhan.Model
 
 class BukuModel {
     private var namaPenulis: String? = null
@@ -6,6 +6,7 @@ class BukuModel {
     private var judulBuku: String? = null
     private var id: String? = null
     private var description: String? = null
+    private var key: String? = null
 
     constructor()
     constructor(nama: String, tanggal: String, judul: String) {
@@ -30,12 +31,20 @@ class BukuModel {
         return id!!
     }
 
+    fun getKey(): String {
+        return key!!
+    }
+
     fun getDesc(): String {
         return description!!
     }
 
     fun setNama(nama: String) {
         this.namaPenulis = nama
+    }
+
+    fun setKey(key: String) {
+        this.key = key
     }
 
     fun setTanggal(tanggal: String) {

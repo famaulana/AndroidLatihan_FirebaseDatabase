@@ -1,4 +1,4 @@
-package com.example.androidlatihan15_firebasedb_farhan
+package com.example.androidlatihan15_firebasedb_farhan.Adapter
 
 import android.content.Context
 import android.content.SharedPreferences
